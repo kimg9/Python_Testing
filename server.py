@@ -1,5 +1,5 @@
 import json
-from flask import Flask,render_template,request,redirect,flash,url_for
+from flask import Flask,render_template,request,redirect,flash,url_for,session
 
 
 def loadClubs():
@@ -24,10 +24,22 @@ clubs = loadClubs()
 def index():
     return render_template('index.html')
 
+
+@app.route('/welcome')
+def welcome():
+    club = session.pop('club')
+    return render_template('welcome.html',club=club,competitions=competitions)
+
+
 @app.route('/showSummary',methods=['POST'])
 def showSummary():
-    club = [club for club in clubs if club['email'] == request.form['email']][0]
-    return render_template('welcome.html',club=club,competitions=competitions)
+    club = [club for club in clubs if club["email"] == request.form['email']]
+    if not club:
+        flash("Invalid credentials.")
+        return render_template('index.html')
+    else:
+        session['club'] = club[0]
+        return redirect(url_for('welcome'))
 
 
 @app.route('/book/<competition>/<club>')
