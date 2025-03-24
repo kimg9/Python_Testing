@@ -2,7 +2,7 @@ from utils.db_utils import (
     loadClubs,
     loadCompetitions,
     updateClubPoint,
-    updateCompetitionPlaces,
+    updateCompetition,
 )
 
 
@@ -50,7 +50,7 @@ def test_should_update_competitions_places(client):
     comp_places = comp["numberOfPlaces"]
 
     comp.update({"numberOfPlaces": "12"})
-    updateCompetitionPlaces(comp)
+    updateCompetition(comp)
 
     after_competitions = loadCompetitions()
     for c in after_competitions:
@@ -58,17 +58,10 @@ def test_should_update_competitions_places(client):
             assert c["numberOfPlaces"] == "12"
 
     comp.update({"numberOfPlaces": comp_places})
-    updateCompetitionPlaces(comp)
+    updateCompetition(comp)
 
     after_after_competitions = loadCompetitions()
     for c in after_after_competitions:
         if c["name"] == competition_name:
             assert c["numberOfPlaces"] == comp_places
 
-
-# def test_should_insert_delete_values(client):
-#     club = {"name": "TEST club", "email": "emailldetest@test.co", "points": "13"}
-#     insertNewClub(club)
-#     assert club in loadClubs()
-#     deleteClub(club)
-#     assert not club in loadClubs()

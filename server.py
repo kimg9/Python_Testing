@@ -1,11 +1,11 @@
+from datetime import datetime
 from flask import Flask, render_template, request, redirect, flash, url_for, session
 from utils.db_utils import (
     loadClubs,
     loadCompetitions,
     updateClubPoint,
-    updateCompetitionPlaces,
+    updateCompetition,
 )
-
 
 app = Flask(__name__)
 app.secret_key = "something_special"
@@ -59,7 +59,15 @@ def purchasePlaces():
     updatedNumberOfPlaces = int(competition["numberOfPlaces"]) - requestedPlaces
     updatedPoints = int(club["points"]) - requestedPlaces
 
+    competition_date = datetime.strptime(competition["date"], "%Y-%m-%d %H:%M:%S")
+    current_datetime = datetime.now()
+
     errors = False
+    if competition_date < current_datetime:
+        flash(
+            "This competition has already happened. You cannot book places for an outdated competition."
+        )
+        return render_template("booking.html", club=club, competition=competition)
     if requestedPlaces > 12:
         flash("You cannot book more than 12 places at once.")
         errors = True
@@ -75,7 +83,7 @@ def purchasePlaces():
     else:
         competition.update({"numberOfPlaces": str(updatedNumberOfPlaces)})
         club.update({"points": str(updatedPoints)})
-        updateCompetitionPlaces(competition)
+        updateCompetition(competition)
         updateClubPoint(club)
         flash("Great-booking complete!")
         return render_template("welcome.html", club=club, competitions=competitions)

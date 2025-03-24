@@ -38,9 +38,9 @@ def _saveCompetitions(listOfCompetitions):
         c.truncate()
 
 
-def updateCompetitionPlaces(competition_values):
+def updateCompetition(competition_values):
     listOfCompetitions = loadCompetitions()
     for competition in listOfCompetitions:
         if competition_values["name"] == competition["name"]:
-            competition["numberOfPlaces"] = competition_values["numberOfPlaces"]
+            competition.update(competition_values)
     _saveCompetitions(listOfCompetitions)
