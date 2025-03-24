@@ -1,5 +1,10 @@
 from flask import Flask, render_template, request, redirect, flash, url_for, session
-from utils.db_utils import loadClubs, loadCompetitions
+from utils.db_utils import (
+    loadClubs,
+    loadCompetitions,
+    updateClubPoint,
+    updateCompetitionPlaces,
+)
 
 
 app = Flask(__name__)
@@ -67,6 +72,8 @@ def purchasePlaces():
     else:
         competition.update({"numberOfPlaces": str(updatedNumberOfPlaces)})
         club.update({"points": str(updatedPoints)})
+        updateCompetitionPlaces(competition)
+        updateClubPoint(club)
         flash("Great-booking complete!")
         return render_template("welcome.html", club=club, competitions=competitions)
 
