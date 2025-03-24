@@ -60,6 +60,9 @@ def purchasePlaces():
     updatedPoints = int(club["points"]) - requestedPlaces
 
     errors = False
+    if requestedPlaces > 12:
+        flash("You cannot book more than 12 places at once.")
+        errors = True
     if updatedPoints < 0:
         flash("You don't have enough points to book this many places.")
         errors = True
