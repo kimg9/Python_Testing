@@ -1,17 +1,5 @@
-import json
 from flask import Flask, render_template, request, redirect, flash, url_for, session
-
-
-def loadClubs():
-    with open("clubs.json") as c:
-        listOfClubs = json.load(c)["clubs"]
-        return listOfClubs
-
-
-def loadCompetitions():
-    with open("competitions.json") as comps:
-        listOfCompetitions = json.load(comps)["competitions"]
-        return listOfCompetitions
+from utils.db_utils import loadClubs, loadCompetitions
 
 
 app = Flask(__name__)
@@ -58,14 +46,29 @@ def book(competition, club):
 
 @app.route("/purchasePlaces", methods=["POST"])
 def purchasePlaces():
-    competition = [c for c in competitions if c["name"] == request.form["competition"]][
-        0
-    ]
-    club = [c for c in clubs if c["name"] == request.form["club"]][0]
-    placesRequired = int(request.form["places"])
-    competition["numberOfPlaces"] = int(competition["numberOfPlaces"]) - placesRequired
-    flash("Great-booking complete!")
-    return render_template("welcome.html", club=club, competitions=competitions)
+    competition = [
+        c for c in loadCompetitions() if c["name"] == request.form["competition"]
+    ][0]
+    club = [c for c in loadClubs() if c["name"] == request.form["club"]][0]
+    requestedPlaces = int(request.form["places"])
+    updatedNumberOfPlaces = int(competition["numberOfPlaces"]) - requestedPlaces
+    updatedPoints = int(club["points"]) - requestedPlaces
+
+    errors = False
+    if updatedPoints < 0:
+        flash("You don't have enough points to book this many places.")
+        errors = True
+    if updatedNumberOfPlaces < 0:
+        flash("The chosen number of places exceeds capacity.")
+        errors = True
+
+    if errors:
+        return render_template("booking.html", club=club, competition=competition)
+    else:
+        competition.update({"numberOfPlaces": str(updatedNumberOfPlaces)})
+        club.update({"points": str(updatedPoints)})
+        flash("Great-booking complete!")
+        return render_template("welcome.html", club=club, competitions=competitions)
 
 
 # TODO: Add route for points display
