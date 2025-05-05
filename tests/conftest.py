@@ -18,7 +18,9 @@ def test_db():
     os.rename("competitions.json", "real.competitions.json")
     os.rename("test_clubs.json", "clubs.json")
     os.rename("test_competitions.json", "competitions.json")
+    print("INIT...")
     yield
+    print("END...")
     os.rename("clubs.json", "test_clubs.json")
     os.rename("competitions.json", "test_competitions.json")
     os.rename("real.clubs.json", "clubs.json")

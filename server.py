@@ -21,7 +21,7 @@ def index():
 @app.route("/welcome")
 def welcome():
     club = session.pop("club")
-    return render_template("welcome.html", club=club, competitions=competitions)
+    return render_template("welcome.html", club=club, clubs=clubs, competitions=competitions)
 
 
 @app.route("/showSummary", methods=["POST"])
@@ -45,7 +45,7 @@ def book(competition, club):
         )
     else:
         flash("Something went wrong-please try again")
-        return render_template("welcome.html", club=club, competitions=competitions)
+        return render_template("welcome.html", club=club, clubs=clubs, competitions=competitions)
 
 
 @app.route("/purchasePlaces", methods=["POST"])
@@ -85,10 +85,7 @@ def purchasePlaces():
         updateCompetition(competition)
         updateClubPoint(club)
         flash("Great-booking complete!")
-        return render_template("welcome.html", club=club, competitions=competitions)
-
-
-# TODO: Add route for points display
+        return render_template("welcome.html", club=club, clubs=clubs, competitions=competitions)
 
 
 @app.route("/logout")
