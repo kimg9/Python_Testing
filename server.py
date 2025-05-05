@@ -1,11 +1,10 @@
 from datetime import datetime
-from flask import Flask, render_template, request, redirect, flash, url_for, session
-from utils.db_utils import (
-    loadClubs,
-    loadCompetitions,
-    updateClubPoint,
-    updateCompetition,
-)
+
+from flask import (Flask, flash, redirect, render_template, request, session,
+                   url_for)
+
+from utils.db_utils import (loadClubs, loadCompetitions, updateClubPoint,
+                            updateCompetition)
 
 app = Flask(__name__)
 app.secret_key = "something_special"
