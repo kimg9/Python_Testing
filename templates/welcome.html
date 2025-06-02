@@ -11,14 +11,14 @@
 
     {% include 'messages.html' %}
 
-    Points available: {{club['points']}}
+    <p id="points">Points available: {{club['points']}}</p>
     <h3>Competitions:</h3>
     <ul>
         {% for comp in competitions%}
         <li>
             {{comp['name']}}<br />
             Date: {{comp['date']}}</br>
-            Number of Places: {{comp['numberOfPlaces']}}
+            <span id="places">Number of Places: {{comp['numberOfPlaces']}}</span>
             {%if comp['numberOfPlaces']|int >0%}
             <a href="{{ url_for('book',competition=comp['name'],club=club['name']) }}">Book Places</a>
             {%endif%}

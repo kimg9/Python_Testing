@@ -85,6 +85,7 @@ def purchasePlaces():
         updateCompetition(competition)
         updateClubPoint(club)
         flash("Great-booking complete!")
+        competitions = loadCompetitions()
         return render_template("welcome.html", club=club, competitions=competitions)
 
 
