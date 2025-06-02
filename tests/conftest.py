@@ -1,4 +1,6 @@
 import os
+import subprocess
+import time
 
 import pytest
 
@@ -23,3 +25,12 @@ def test_db():
     os.rename("competitions.json", "test_competitions.json")
     os.rename("real.clubs.json", "clubs.json")
     os.rename("real.competitions.json", "competitions.json")
+
+
+@pytest.fixture
+def init_server():
+    server = subprocess.Popen(["flask", "run"])
+    time.sleep(2)
+    yield server
+    server.terminate()
+    server.wait()
