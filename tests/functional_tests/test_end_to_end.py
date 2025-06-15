@@ -39,7 +39,9 @@ def test_end_to_end_success(client, init_server):
     point_original_value = int(club["points"])
     points = driver.find_element(By.ID, "points")
     assert points.text == f"Points available: {point_original_value}"
-
+    club.update({"points": "10"})
+    updateClubPoint(club)
+    
     driver.find_elements(By.LINK_TEXT, "Book Places")[0].click()
     wait.until(
         EC.url_to_be("http://127.0.0.1:5000/book/Spring%20Festival/Simply%20Lift")
@@ -56,7 +58,7 @@ def test_end_to_end_success(client, init_server):
     updateCompetition(competition)
 
     places_input = driver.find_element(By.NAME, "places")
-    number_of_places = random.randint(1, min(12, places_original_value))
+    number_of_places = random.randint(1, 10)
     places_input.send_keys(number_of_places)
     driver.find_element(By.TAG_NAME, "button").click()
     wait.until(EC.url_to_be("http://127.0.0.1:5000/purchasePlaces"))
